@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'CognitoWrapper_Example' do
+    
+  pod 'CognitoWrapper', :path => '../'
+  pod 'EitherResult'
+  
+  target 'CognitoWrapper_Tests' do
+    inherit! :search_paths
+  end
+end

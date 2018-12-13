@@ -1,0 +1,40 @@
+{
+  "name": "CognitoWrapper",
+  "version": "0.1.0",
+  "summary": "A short description of CognitoWrapper.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/egarro@aldogroup.com/CognitoWrapper",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "egarro@aldogroup.com": "egarro@aldogroup.com"
+  },
+  "source": {
+    "git": "https://github.com/egarro@aldogroup.com/CognitoWrapper.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "CognitoWrapper/Classes/**/*",
+  "public_header_files": "Pod/Classes/**/*.h",
+  "dependencies": {
+    "AWSCognito": [
+
+    ],
+    "AWSCognitoAuth": [
+
+    ],
+    "AWSCognitoIdentityProvider": [
+
+    ],
+    "AWSUserPoolsSignIn": [
+
+    ],
+    "EitherResult": [
+
+    ]
+  }
+}
