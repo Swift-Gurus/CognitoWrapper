@@ -35,7 +35,7 @@ public struct LoginResponse<UserInfo: Decodable>: Decodable {
     public let data: UserInfo
 }
 
-protocol CognitoAuth {
+public protocol CognitoAuth {
     func login<T: Decodable>(with credentials: CognitoUserCredentialsProvider,
                                    completion: @escaping (ALResult<LoginResponse<T>>) -> Void)
     func logout()
