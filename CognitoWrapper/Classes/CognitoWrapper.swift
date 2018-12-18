@@ -16,13 +16,17 @@ public enum CognitoLoginError : Error {
     case UsernameNotFound
 }
 
+public protocol CredentialsStorage {
+    var lastLoginCredentials: CognitoUserCredentialsProvider? { get set }
+}
+
 /**
  Class to hide Cognito API from the client
  **/
-final public class CognitoWrapper: NSObject, CognitoAuth {
+final public class CognitoWrapper: NSObject, CognitoAuth, CredentialsStorage {
     
     var pool: AWSCognitoIdentityUserPool
-    private static var lastLoginCredentials: CognitoUserCredentialsProvider?
+    public var lastLoginCredentials: CognitoUserCredentialsProvider?
     private let logger: CognitoLogger?
     private let decoder = JSONDecoder()
     private let encoder = JSONEncoder()
@@ -53,7 +57,7 @@ final public class CognitoWrapper: NSObject, CognitoAuth {
     ///   - completion: returns LoginResponse as a decodable object.
     public func login<T>(with credentials: CognitoUserCredentialsProvider, completion: @escaping (ALResult<LoginResponse<T>>) -> Void) where T : Decodable {
         logger?.log(message: "Login user")
-        CognitoWrapper.lastLoginCredentials = credentials
+        self.lastLoginCredentials = credentials
         loginUser(with: credentials, completion: { [weak self] in self?.processLoginUserResult($0, completion: completion) })
     }
     
@@ -66,29 +70,31 @@ final public class CognitoWrapper: NSObject, CognitoAuth {
     public func refreshSessionForCurrentUser(completion: @escaping (ALResult<String>) -> Void) {
         logger?.log(message: "Requested to refresh token")
         let user = pool.getUser()
-        if let credentials = CognitoWrapper.lastLoginCredentials {
-            logger?.log(message: "Started  refresh token")
-            let task = user.getSession(credentials.username,
-                                       password: credentials.password,
-                                       validationData: nil)
-            task.continueWith(block: { (response) -> Any? in
-                let result = ALResult(value: response.result?.idToken?.tokenString,
-                                      error: response.error)
-                result.do(work: { [weak self] _ in self?.logger?.log(message: "Received token ")})
-                      .onError({[weak self] in self?.logger?.log(error: $0) })
-                completion(result)
-                return task
-            })
-        } else {
+        guard  let credentials = lastLoginCredentials else {
             completion(.wrong(CognitoLoginError.UsernameNotFound))
+            return
         }
+        
+        logger?.log(message: "Started  refresh token")
+        let task = user.getSession(credentials.username,
+                                   password: credentials.password,
+                                   validationData: nil)
+        task.continueWith(block: { (response) -> Any? in
+            let result = ALResult(value: response.result?.idToken?.tokenString,
+                                  error: response.error)
+            
+            result.do(work: { [weak self] _ in self?.logger?.log(message: "Received token ")})
+                .onError({[weak self] in self?.logger?.log(error: $0) })
+            completion(result)
+            return task
+        })
     }
     
     public func logout() {
         logger?.log(message: "Logging out...")
         let user = pool.getUser()
         user.signOut()
-        CognitoWrapper.lastLoginCredentials = nil
+        lastLoginCredentials = nil
     }
     
     private func loginUser(with credentials: CognitoUserCredentialsProvider, completion: @escaping (ALResult<SessionResult>) -> Void) {
