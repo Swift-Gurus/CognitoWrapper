@@ -13,7 +13,7 @@ public protocol CognitoLogger {
     func log(error:Error)
 }
 
-public protocol CognitoUserCredentialsProvider {
+public protocol UserCredentials {
     var username: String { get }
     var password: String { get }
 }
@@ -36,7 +36,7 @@ public struct LoginResponse<UserInfo: Decodable>: Decodable {
 }
 
 public protocol CognitoAuth {
-    func login<T: Decodable>(with credentials: CognitoUserCredentialsProvider,
+    func login<T: Decodable>(with credentials: UserCredentials,
                                    completion: @escaping (ALResult<LoginResponse<T>>) -> Void)
     func logout()
 }

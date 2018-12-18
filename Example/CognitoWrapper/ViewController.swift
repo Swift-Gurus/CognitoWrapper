@@ -11,7 +11,7 @@ import CognitoWrapper
 import EitherResult
 
 
-final class CredentialsProvider : CognitoUserCredentialsProvider {
+final class CredentialsProvider : UserCredentials {
     var username: String = ""
     var password: String = ""
 }

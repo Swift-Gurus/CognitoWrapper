@@ -16,23 +16,32 @@ public enum CognitoLoginError : Error {
     case UsernameNotFound
 }
 
+
+public final class DefaultMemoryCredentialStorage: CredentialsStorage {
+    public static var sharedInstance = DefaultMemoryCredentialStorage()
+    public var lastLoginCredentials: UserCredentials?
+}
+
 public protocol CredentialsStorage {
-    var lastLoginCredentials: CognitoUserCredentialsProvider? { get set }
+    var lastLoginCredentials: UserCredentials? { get set }
 }
 
 /**
  Class to hide Cognito API from the client
  **/
-final public class CognitoWrapper: NSObject, CognitoAuth, CredentialsStorage {
+final public class CognitoWrapper: NSObject, CognitoAuth {
     
     var pool: AWSCognitoIdentityUserPool
-    public var lastLoginCredentials: CognitoUserCredentialsProvider?
+    public var credentialsStorage: CredentialsStorage
     private let logger: CognitoLogger?
     private let decoder = JSONDecoder()
     private let encoder = JSONEncoder()
     
-    public init(userPool: CognitoUserPoolProvider, logger: CognitoLogger? = nil) {
+    public init(userPool: CognitoUserPoolProvider,
+                credentialsStorage: CredentialsStorage = DefaultMemoryCredentialStorage.sharedInstance,
+                logger: CognitoLogger? = nil) {
         self.logger = logger
+        self.credentialsStorage = credentialsStorage
         let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: nil)
         let poolConf  = AWSCognitoIdentityUserPoolConfiguration(clientId: userPool.clientID,
                                                                 clientSecret: nil,
@@ -55,9 +64,9 @@ final public class CognitoWrapper: NSObject, CognitoAuth, CredentialsStorage {
     /// - Parameters:
     ///   - credentials: any class that conforms CognitoUserCredentialsProvider
     ///   - completion: returns LoginResponse as a decodable object.
-    public func login<T>(with credentials: CognitoUserCredentialsProvider, completion: @escaping (ALResult<LoginResponse<T>>) -> Void) where T : Decodable {
+    public func login<T>(with credentials: UserCredentials, completion: @escaping (ALResult<LoginResponse<T>>) -> Void) where T : Decodable {
         logger?.log(message: "Login user")
-        self.lastLoginCredentials = credentials
+        credentialsStorage.lastLoginCredentials = credentials
         loginUser(with: credentials, completion: { [weak self] in self?.processLoginUserResult($0, completion: completion) })
     }
     
@@ -70,7 +79,7 @@ final public class CognitoWrapper: NSObject, CognitoAuth, CredentialsStorage {
     public func refreshSessionForCurrentUser(completion: @escaping (ALResult<String>) -> Void) {
         logger?.log(message: "Requested to refresh token")
         let user = pool.getUser()
-        guard  let credentials = lastLoginCredentials else {
+        guard  let credentials = credentialsStorage.lastLoginCredentials  else {
             completion(.wrong(CognitoLoginError.UsernameNotFound))
             return
         }
@@ -94,10 +103,10 @@ final public class CognitoWrapper: NSObject, CognitoAuth, CredentialsStorage {
         logger?.log(message: "Logging out...")
         let user = pool.getUser()
         user.signOut()
-        lastLoginCredentials = nil
+        credentialsStorage.lastLoginCredentials = nil
     }
     
-    private func loginUser(with credentials: CognitoUserCredentialsProvider, completion: @escaping (ALResult<SessionResult>) -> Void) {
+    private func loginUser(with credentials: UserCredentials, completion: @escaping (ALResult<SessionResult>) -> Void) {
         let user = pool.getUser()
         userLogin(credentials.username,
                   password: credentials.password,
