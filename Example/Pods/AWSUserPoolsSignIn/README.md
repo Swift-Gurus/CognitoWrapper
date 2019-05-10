@@ -2,8 +2,8 @@
 
 [![Release](https://img.shields.io/github/release/aws/aws-sdk-ios.svg)](../../releases)
 [![CocoaPods](https://img.shields.io/cocoapods/v/AWSiOSSDKv2.svg)](https://cocoapods.org/pods/AWSiOSSDKv2)
-[![CocoaPods Downloads](https://img.shields.io/cocoapods/dt/AWSCore.svg)](https://cocoapods.org/pods/AWSiOSSDKv2)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![CircleCI](https://circleci.com/gh/aws-amplify/aws-sdk-ios.svg?style=svg)](https://circleci.com/gh/aws-amplify/aws-sdk-ios)
 
 The AWS SDK for iOS provides a library and documentation for developers to build connected mobile applications using AWS.
 
@@ -102,7 +102,7 @@ You should use one of these three ways to import the AWS Mobile SDK but not mult
 
 2. Add the following to your `Cartfile`:
 
-        github "aws/aws-sdk-ios"
+        github "aws-amplify/aws-sdk-ios"
 
 3. Then run the following command:
     
@@ -143,6 +143,8 @@ You should use one of these three ways to import the AWS Mobile SDK but not mult
         Input Files: Empty
         Output Files: Empty
 
+> Note: Currently, the AWS SDK for iOS builds the Carthage binaries using Xcode 10.1.0. To consume the pre-built binaries your Xcode version needs to be the same, else you have to build the frameworks on your machine by passing `--no-use-binaries` flag to `carthage update` command.
+
 ### Frameworks
 
 1. Download the SDK from our [AWS Mobile SDK](http://aws.amazon.com/mobile/sdk) page. The SDK is stored in a compressed file archive named `aws-ios-sdk-#.#.#` (where `#.#.#` represents the version number, so for version 2.7.0, the filename is `aws-ios-sdk-2.7.0`).
@@ -170,7 +172,7 @@ You should use one of these three ways to import the AWS Mobile SDK but not mult
     * `AWSSNS.framework`
     * `AWSSQS.framework`
 
-4. Under the **Buid Phases** tab in your **Target**, click the **+** button on the top left and then select **New Run Script Phase**. Then setup the build phase as follows. Make sure this phase is below the `Embed Frameworks` phase.
+4. Under the **Build Phases** tab in your **Target**, click the **+** button on the top left and then select **New Run Script Phase**. Then setup the build phase as follows. Make sure this phase is below the `Embed Frameworks` phase.
 
         Shell /bin/sh
         

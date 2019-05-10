@@ -1,5 +1,5 @@
 //
-// Copyright 2010-2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// Copyright 2010-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License").
 // You may not use this file except in compliance with the License.
@@ -901,6 +901,23 @@ NSString *const AWSCognitoIdentityProviderErrorDomain = @"com.amazonaws.AWSCogni
 @end
 
 @implementation AWSCognitoIdentityProviderAdminSetUserMFAPreferenceResponse
+
+@end
+
+@implementation AWSCognitoIdentityProviderAdminSetUserPasswordRequest
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+	return @{
+             @"password" : @"Password",
+             @"permanent" : @"Permanent",
+             @"userPoolId" : @"UserPoolId",
+             @"username" : @"Username",
+             };
+}
+
+@end
+
+@implementation AWSCognitoIdentityProviderAdminSetUserPasswordResponse
 
 @end
 
@@ -2171,9 +2188,31 @@ NSString *const AWSCognitoIdentityProviderErrorDomain = @"com.amazonaws.AWSCogni
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
 	return @{
+             @"emailSendingAccount" : @"EmailSendingAccount",
              @"replyToEmailAddress" : @"ReplyToEmailAddress",
              @"sourceArn" : @"SourceArn",
              };
+}
+
++ (NSValueTransformer *)emailSendingAccountJSONTransformer {
+    return [AWSMTLValueTransformer reversibleTransformerWithForwardBlock:^NSNumber *(NSString *value) {
+        if ([value caseInsensitiveCompare:@"COGNITO_DEFAULT"] == NSOrderedSame) {
+            return @(AWSCognitoIdentityProviderEmailSendingAccountTypeCognitoDefault);
+        }
+        if ([value caseInsensitiveCompare:@"DEVELOPER"] == NSOrderedSame) {
+            return @(AWSCognitoIdentityProviderEmailSendingAccountTypeDeveloper);
+        }
+        return @(AWSCognitoIdentityProviderEmailSendingAccountTypeUnknown);
+    } reverseBlock:^NSString *(NSNumber *value) {
+        switch ([value integerValue]) {
+            case AWSCognitoIdentityProviderEmailSendingAccountTypeCognitoDefault:
+                return @"COGNITO_DEFAULT";
+            case AWSCognitoIdentityProviderEmailSendingAccountTypeDeveloper:
+                return @"DEVELOPER";
+            default:
+                return nil;
+        }
+    }];
 }
 
 @end
@@ -2992,6 +3031,26 @@ NSString *const AWSCognitoIdentityProviderErrorDomain = @"com.amazonaws.AWSCogni
 
 @end
 
+@implementation AWSCognitoIdentityProviderListTagsForResourceRequest
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+	return @{
+             @"resourceArn" : @"ResourceArn",
+             };
+}
+
+@end
+
+@implementation AWSCognitoIdentityProviderListTagsForResourceResponse
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+	return @{
+             @"tags" : @"Tags",
+             };
+}
+
+@end
+
 @implementation AWSCognitoIdentityProviderListUserImportJobsRequest
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
@@ -3243,6 +3302,7 @@ NSString *const AWSCognitoIdentityProviderErrorDomain = @"com.amazonaws.AWSCogni
              @"requireNumbers" : @"RequireNumbers",
              @"requireSymbols" : @"RequireSymbols",
              @"requireUppercase" : @"RequireUppercase",
+             @"temporaryPasswordValidityDays" : @"TemporaryPasswordValidityDays",
              };
 }
 
@@ -4023,6 +4083,21 @@ NSString *const AWSCognitoIdentityProviderErrorDomain = @"com.amazonaws.AWSCogni
 
 @end
 
+@implementation AWSCognitoIdentityProviderTagResourceRequest
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+	return @{
+             @"resourceArn" : @"ResourceArn",
+             @"tags" : @"Tags",
+             };
+}
+
+@end
+
+@implementation AWSCognitoIdentityProviderTagResourceResponse
+
+@end
+
 @implementation AWSCognitoIdentityProviderUICustomizationType
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
@@ -4052,6 +4127,21 @@ NSString *const AWSCognitoIdentityProviderErrorDomain = @"com.amazonaws.AWSCogni
         return [NSString stringWithFormat:@"%f", [date timeIntervalSince1970]];
     }];
 }
+
+@end
+
+@implementation AWSCognitoIdentityProviderUntagResourceRequest
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+	return @{
+             @"resourceArn" : @"ResourceArn",
+             @"tagKeys" : @"TagKeys",
+             };
+}
+
+@end
+
+@implementation AWSCognitoIdentityProviderUntagResourceResponse
 
 @end
 
@@ -4285,6 +4375,32 @@ NSString *const AWSCognitoIdentityProviderErrorDomain = @"com.amazonaws.AWSCogni
 
 + (NSValueTransformer *)userPoolClientJSONTransformer {
     return [NSValueTransformer awsmtl_JSONDictionaryTransformerWithModelClass:[AWSCognitoIdentityProviderUserPoolClientType class]];
+}
+
+@end
+
+@implementation AWSCognitoIdentityProviderUpdateUserPoolDomainRequest
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+	return @{
+             @"customDomainConfig" : @"CustomDomainConfig",
+             @"domain" : @"Domain",
+             @"userPoolId" : @"UserPoolId",
+             };
+}
+
++ (NSValueTransformer *)customDomainConfigJSONTransformer {
+    return [NSValueTransformer awsmtl_JSONDictionaryTransformerWithModelClass:[AWSCognitoIdentityProviderCustomDomainConfigType class]];
+}
+
+@end
+
+@implementation AWSCognitoIdentityProviderUpdateUserPoolDomainResponse
+
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+	return @{
+             @"cloudFrontDomain" : @"CloudFrontDomain",
+             };
 }
 
 @end

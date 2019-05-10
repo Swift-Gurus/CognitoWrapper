@@ -1,25 +1,25 @@
 {
   "name": "CognitoWrapper",
-  "version": "0.1.0",
-  "summary": "A short description of CognitoWrapper.",
-  "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/egarro@aldogroup.com/CognitoWrapper",
+  "version": "1.0.1",
+  "summary": "A wrapper around AWS Cognito SDK",
+  "platforms": {
+    "ios": "9.3"
+  },
+  "swift_version": "4.0",
+  "description": "This pod provides a simple API for logging in to an AWS backend using Cognito User Pools.",
+  "homepage": "https://github.com/aldo-dev/CognitoWrapper",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
   },
   "authors": {
-    "egarro@aldogroup.com": "egarro@aldogroup.com"
+    "ALDO Inc": "aldodev@aldogroup.com"
   },
   "source": {
-    "git": "https://github.com/egarro@aldogroup.com/CognitoWrapper.git",
-    "tag": "0.1.0"
-  },
-  "platforms": {
-    "ios": "8.0"
+    "git": "https://github.com/aldo-dev/CognitoWrapper.git",
+    "tag": "1.0.1"
   },
   "source_files": "CognitoWrapper/Classes/**/*",
-  "public_header_files": "Pod/Classes/**/*.h",
   "dependencies": {
     "AWSCognito": [
 
