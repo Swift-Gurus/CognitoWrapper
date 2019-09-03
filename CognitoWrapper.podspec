@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'CognitoWrapper'
-  s.version          = '1.0.3'
+  s.version          = '1.0.4'
   s.summary          = 'A wrapper around AWS Cognito SDK'
   s.platform         = :ios, '11.0'
   s.swift_version    = '5.0'
