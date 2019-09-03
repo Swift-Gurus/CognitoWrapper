@@ -37,17 +37,14 @@ final public class CognitoWrapperAuthenticationErrorDecorator: CognitoAuth {
             guard let `self` = self else { return }
 
             result.onError({ (appSynNetworkError) in
-
                 let error = self.processNetworkError(appSynNetworkError)
                 completion(.wrong(error)) })
             .do(work: {completion(.right($0))})
         }
-
         decorated.login(with: credentials, completion: decoratedCompletion)
     }
 
     public func logout() {
-
         decorated.logout()
     }
 
@@ -63,6 +60,5 @@ final public class CognitoWrapperAuthenticationErrorDecorator: CognitoAuth {
         default:
             return error
         }
-
     }
 }
