@@ -1,5 +1,5 @@
 //
-// Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// Copyright 2010-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License").
 // You may not use this file except in compliance with the License.
@@ -13,37 +13,31 @@
 // permissions and limitations under the License.
 //
 
-#import "AWSUserPoolMFAViewController.h"
 
+#import "AWSUserPoolNewPasswordRequiredViewController.h"
 #import "AWSFormTableCell.h"
 #import "AWSFormTableDelegate.h"
 #import "AWSAuthUIHelper.h"
 #import <AWSAuthCore/AWSUIConfiguration.h>
 
-@interface AWSUserPoolMFAViewController () 
+@interface AWSUserPoolNewPasswordRequiredViewController ()
 
-@property (strong, nonatomic) NSString *destination;
-@property (nonatomic,strong) AWSTaskCompletionSource<NSString *>* mfaCodeCompletionSource;
-@property (nonatomic, strong) AWSFormTableCell *authenticationCodeRow;
+@property (nonatomic, strong) AWSTaskCompletionSource<AWSCognitoIdentityNewPasswordRequiredDetails *> *passRequiredCompletionSource;
+@property (nonatomic, strong) AWSCognitoIdentityNewPasswordRequiredInput *passwordRequiredInput;
+@property (nonatomic, strong) AWSFormTableCell *passwordRow;
 @property (nonatomic, strong) AWSFormTableDelegate *tableDelegate;
 
 @end
 
-@implementation AWSUserPoolMFAViewController
+@implementation AWSUserPoolNewPasswordRequiredViewController
 
 #pragma mark - UIViewController
-
-- (void) viewWillAppear:(BOOL)animated {
-    self.codeSentTo.text = self.destination;
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setUp];
 }
 
-// This is used to dismiss the keyboard, user just has to tap outside the
-// user name and password views and it will dismiss
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
     if (touch.phase == UITouchPhaseBegan) {
@@ -54,18 +48,14 @@
 }
 
 - (void)setUp {
-    _authenticationCodeRow = [[AWSFormTableCell alloc] initWithPlaceHolder:@"Authentication Code" type:InputTypeText];
+    _passwordRow = [[AWSFormTableCell alloc] initWithPlaceHolder:@"New Password" type:InputTypePassword];
     _tableDelegate = [AWSFormTableDelegate new];
-    [self.tableDelegate addCell:self.authenticationCodeRow];
+    [self.tableDelegate addCell:self.passwordRow];
     self.tableView.delegate = self.tableDelegate;
     self.tableView.dataSource = self.tableDelegate;
     [self.tableView reloadData];
     [AWSAuthUIHelper setUpFormShadowForView:self.tableFormView];
     [self setUpBackground];
-    
-    // setup button background
-    [AWSAuthUIHelper applyPrimaryColorFromConfig:self.config
-                                          toView:self.signInButton];
 }
 
 - (void)setUpBackground {
@@ -75,7 +65,7 @@
         self.view.backgroundColor = [AWSAuthUIHelper getSecondaryBackgroundColor];
     }
     
-    self.title = @"MFA";
+    self.title = @"New Password Required";
     UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.tableFormView.center.y)];
     backgroundImageView.backgroundColor = [AWSAuthUIHelper getBackgroundColor:self.config];
     backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
@@ -83,17 +73,29 @@
 }
 
 - (IBAction)onSignIn:(id)sender {
-    self.mfaCodeCompletionSource.result = [self.tableDelegate getValueForCell:self.authenticationCodeRow
-                                                                 forTableView:self.tableView];
+    NSString *password = [self.tableDelegate getValueForCell:self.passwordRow
+                                                forTableView:self.tableView];
+    
+    AWSCognitoIdentityNewPasswordRequiredDetails *details = [[AWSCognitoIdentityNewPasswordRequiredDetails alloc] initWithProposedPassword:password
+                                                                                                                            userAttributes:self.passwordRequiredInput.userAttributes];
+    [self.passRequiredCompletionSource setResult:details];
 }
 
--(void) getMultiFactorAuthenticationCode: (AWSCognitoIdentityMultifactorAuthenticationInput *)authenticationInput mfaCodeCompletionSource: (AWSTaskCompletionSource<NSString *> *) mfaCodeCompletionSource {
-    self.mfaCodeCompletionSource = mfaCodeCompletionSource;
-    self.destination = authenticationInput.destination;
+/**
+ Obtain a new password and specify profile information as part of sign in from the end user
+ @param newPasswordRequiredInput user profile and required attributes of the end user
+ @param newPasswordRequiredCompletionSource set newPasswordRequiredCompletionSource.result with the new password and any attribute updates from the end user
+ */
+-(void) getNewPasswordDetails: (AWSCognitoIdentityNewPasswordRequiredInput *) newPasswordRequiredInput
+newPasswordRequiredCompletionSource: (AWSTaskCompletionSource<AWSCognitoIdentityNewPasswordRequiredDetails *> *) newPasswordRequiredCompletionSource {
+    self.passRequiredCompletionSource = newPasswordRequiredCompletionSource;
+    self.passwordRequiredInput = newPasswordRequiredInput;
 }
-
-
--(void) didCompleteMultifactorAuthenticationStepWithError:(NSError*) error {
+/**
+ This step completed, usually either display an error to the end user or dismiss ui
+ @param error the error if any that occured
+ */
+-(void) didCompleteNewPasswordStepWithError:(NSError* _Nullable) error {
     dispatch_async(dispatch_get_main_queue(), ^{
         if(error){
             UIAlertController *alertController = [UIAlertController alertControllerWithTitle:error.userInfo[@"__type"]
@@ -107,6 +109,5 @@
         }
     });
 }
-
 
 @end
