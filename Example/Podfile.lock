@@ -1,19 +1,19 @@
 PODS:
-  - AWSAuthCore (2.9.8):
-    - AWSCore (= 2.9.8)
-  - AWSCognito (2.9.8):
-    - AWSCore (= 2.9.8)
-  - AWSCognitoAuth (2.9.8):
+  - AWSAuthCore (2.12.0):
+    - AWSCore (= 2.12.0)
+  - AWSCognito (2.12.0):
+    - AWSCore (= 2.12.0)
+  - AWSCognitoAuth (2.12.0):
     - AWSCognitoIdentityProviderASF (= 1.0.1)
-  - AWSCognitoIdentityProvider (2.9.8):
+  - AWSCognitoIdentityProvider (2.12.0):
     - AWSCognitoIdentityProviderASF (= 1.0.1)
-    - AWSCore (= 2.9.8)
+    - AWSCore (= 2.12.0)
   - AWSCognitoIdentityProviderASF (1.0.1)
-  - AWSCore (2.9.8)
-  - AWSUserPoolsSignIn (2.9.8):
-    - AWSAuthCore (= 2.9.8)
-    - AWSCognitoIdentityProvider (= 2.9.8)
-  - CognitoWrapper (1.0.3):
+  - AWSCore (2.12.0)
+  - AWSUserPoolsSignIn (2.12.0):
+    - AWSAuthCore (= 2.12.0)
+    - AWSCognitoIdentityProvider (= 2.12.0)
+  - CognitoWrapper (1.0.5):
     - AWSCognito
     - AWSCognitoAuth
     - AWSCognitoIdentityProvider
@@ -25,7 +25,7 @@ DEPENDENCIES:
   - CognitoWrapper (from `../`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - AWSAuthCore
     - AWSCognito
     - AWSCognitoAuth
@@ -40,16 +40,16 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  AWSAuthCore: 7ebbe523f28149a1706e7ec1736203cdaaeba380
-  AWSCognito: b9890c55e85fba46fd9695192ab64420abbc4328
-  AWSCognitoAuth: 91549d0480307a3008469cf9ab30029f77037089
-  AWSCognitoIdentityProvider: 738b488930eca71cbaa91ac53764b146e90a6650
+  AWSAuthCore: 547617e1ed76a699b56018105133e23f0fddc8e2
+  AWSCognito: 298d5ac707abe701025361ac925063601d18f23e
+  AWSCognitoAuth: 60a0fdbacb0e25028b53783066b90c50ff2a90c1
+  AWSCognitoIdentityProvider: a4a37ca74ecce30ec534647e6aae89c7aff3348c
   AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
-  AWSCore: 5da86c5afde44a87b06a2df50601bca81a8cee13
-  AWSUserPoolsSignIn: 127aebb7fd668b4e897063c34356f9e25a576b84
-  CognitoWrapper: 3be4cd7482ac250144e6aaca4c3864ffa9764226
+  AWSCore: 6573232b6b4339ce0ffcf8abd4215a412488f71f
+  AWSUserPoolsSignIn: 070293a3e73401bbc35fc639244b555b9d9f1aa8
+  CognitoWrapper: 115789dade7dab17be30adb928c14e21013ef97d
   EitherResult: 9a67a8cd25fa6d6f8ded0e7304ea2eb302bcbbc8
 
 PODFILE CHECKSUM: 215856ddf8af0e5baaf4c31f12f55218d85a9bc7
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.8.3
